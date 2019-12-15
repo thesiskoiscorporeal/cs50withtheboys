@@ -25,8 +25,8 @@ int main(void)
         if (coins[i] <= cents)
         {
             x = cents/coins[i];
-            y = x + y;
-            cents = cents - coins[i]*x;
+            y += x;
+            cents -= coins[i]*x;
             i++;  
         }
         // skips coin type at [i] if remaining cash is less than coin type
