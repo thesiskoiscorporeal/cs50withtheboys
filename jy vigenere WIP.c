@@ -13,12 +13,12 @@ int main(int argc, string argv[])
             if (isalpha(argv[1][j])) {}
             else
             {
-                printf("Usage ./caesar key\n");
+                printf("Usage ./vigenere keyword\n");
                 exit(0); // Ends program
             }
         }
         // Now I need to store it as an array of digits
-        // Then I need to do what I previously did by adding
+        
         int cipher = atoi(argv[1]); // Stores cipher as integer data type
         string input = get_string("plaintext: "); // Gets message to be encrypted
         printf("ciphertext: ");
@@ -41,7 +41,7 @@ int main(int argc, string argv[])
     }
     else // Ensures there is only one other argument
     {
-        printf("Usage ./caesar key\n");
+        printf("Usage ./vigenere keyword\n");
         return(1);
     }
 }
