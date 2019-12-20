@@ -112,6 +112,3 @@ void vigenere_key(string pt, string input)
     // Publish
     printf("ciphertext: %s\n", ct);
 }
-
-
-
