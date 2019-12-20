@@ -5,57 +5,35 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-bool check (int argc, string input);
-int shift (char c);
+bool check(int argc, string input);
+int shift(char c);
+void vigenere_key(string pt, string input);
 
 int main(int argc, string argv[])
 {
     // Setting global variable argv[1]
     string input = argv[1];
-    
+
     // Checking
-    if (check (argc, input) == false)
+    if (check(argc, input) == false)
     {
-        printf ("./vigenere keyword\n");
+        printf("./vigenere keyword\n");
         return 1;
     }
-    
+
     // Obtain plain text
-    string pt = get_string ("plaintext: ");
-    
-    // Establishing string ciphertext ("ct") of similar length to pt
-    string ct = pt;
-    
-    int counter_pt = 0;
-    int len_input = strlen(input);
-    
-    for (int i = 0, len_pt = strlen(pt), index; i < len_pt; i++)
-    {
-        // Obtaining index value
-        index = counter_pt % len_input;
-        
-        // Calculating the key
-        int key = shift (input[index]);
-        
-        // Encrypting
-        if (isupper(pt[i]))
-        {
-            ct[i] = ((pt[i] - 65 + key) % 26) + 65;
-            counter_pt ++;
-        }
-        else if (islower(pt[i]))
-        {
-            ct[i] = ((pt[i] - 97 + key) % 26) + 97;
-            counter_pt ++;
-        }
-    }
-    
-    // publish
-    printf ("ciphertext: %s\n", ct);
+    string pt = get_string("plaintext: ");
+
+    // Vigenere key
+    vigenere_key(pt, input);
+
 }
 
+
+
+
 // Checking function
-bool check (int argc, string input)
+bool check(int argc, string input)
 {
     // Ensures single command-line argument, else false
     if (argc == 2)
@@ -82,7 +60,7 @@ bool check (int argc, string input)
 }
 
 // Shift function
-int shift (char c)
+int shift(char c)
 {
     int n = 0;
     if (isupper(c))
@@ -96,3 +74,44 @@ int shift (char c)
         return n;
     }
 }
+
+// Vigenere key
+void vigenere_key(string pt, string input)
+{
+    // Initialize string ciphertext ("ct") of similar length to pt
+    string ct = pt;
+
+    // Initialize character count in plaintext
+    int counter_pt = 0;
+
+    // Initiliaze length of input
+    int len_input = strlen(input);
+
+    // Establish loop through plaintext array
+    for (int i = 0, len_pt = strlen(pt); i < len_pt; i++)
+    {
+        // Obtaining index value
+        int index = counter_pt % len_input;
+
+        // Calculating the key (integer form)
+        int key = shift(input[index]);
+
+        // Encrypting
+        if (isupper(pt[i]))
+        {
+            ct[i] = ((pt[i] - 65 + key) % 26) + 65;
+            counter_pt ++;
+        }
+        else if (islower(pt[i]))
+        {
+            ct[i] = ((pt[i] - 97 + key) % 26) + 97;
+            counter_pt ++;
+        }
+    }
+
+    // Publish
+    printf("ciphertext: %s\n", ct);
+}
+
+
+
