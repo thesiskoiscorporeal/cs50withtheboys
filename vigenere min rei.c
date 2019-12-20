@@ -26,7 +26,6 @@ int main(int argc, string argv[])
 
     // Vigenere key
     vigenere_key(pt, input);
-
 }
 
 
