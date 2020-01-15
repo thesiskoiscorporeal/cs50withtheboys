@@ -15,10 +15,9 @@ int main(int argc, string key[])
         {
             if (90 < (int) key [1][k] && (int) key[1][k] < 97)//but in that small non letter region
             {
-                printf("Key must contain 26 characters.\n");
-                return 1;//error
+                printf("Key must contain 26 characters.\n");//reject
+                return 1;
             }
-
             else if (97 < (int) key[1][k] && (int) key [1][k] < 123)//if lowercase
             {
                 key[1][k] -= 32;//change to caps
@@ -27,10 +26,23 @@ int main(int argc, string key[])
         else//otherwise error
         {
             printf("Key must contain 26 characters.\n");
-            return 1;
+            return 1;//
+        }
+    int count = 0;
+    for (int d = 0; d < 26; d += 1)//then compare against each letter of key
+    {
+        if (key[1][k] == key[1][d] || key[1][k] == key[1][d] + 32)
+        {
+            count += 1;
         }
     }
-    //if key is all good then
+        if (count >= 2)//if duplicate letters
+        {
+            printf("Key must contain 26 characters.\n");
+            return 1;//
+        }
+    }
+    //if key is all ok then
     string plaintext = get_string("plaintext: ");
     printf("ciphertext: ");
     for (int p = 0; p < strlen(plaintext); p += 1)//go through each char of plaintext
