@@ -10,8 +10,8 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args" : ["corpus1"],
-            "cwd" : "A:\\Google Drive\\Github\\cs50withtheboys\\drish\\cs50_ai\\pagerank"
+            "args" : ["shopping.csv"],
+            "cwd" : "A:\\Google Drive\\Learning\\Github\\cs50withtheboys\\drish\\cs50_ai\\shopping"
         }
     ]
 }

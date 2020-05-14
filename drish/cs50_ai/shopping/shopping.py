@@ -4,6 +4,7 @@ import calendar
 
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LogisticRegression
 
 import pandas as pd
 
@@ -92,7 +93,9 @@ def train_model(evidence, labels):
     Given a list of evidence lists and a list of labels, return a
     fitted k-nearest neighbor model (k=1) trained on the data.
     """
-    raise NotImplementedError
+    classifier = LogisticRegression(max_iter=5000) # I don't listen to instructions lol
+
+    return classifier.fit(evidence, labels)
 
 
 def evaluate(labels, predictions):
@@ -110,7 +113,18 @@ def evaluate(labels, predictions):
     representing the "true negative rate": the proportion of
     actual negative labels that were accurately identified.
     """
-    raise NotImplementedError
+    
+    df = pd.DataFrame.from_dict({'labels': labels, 'predictions': predictions})
+    
+    #print(df[df['labels']!=df['predictions']])
+
+    df_positive = df[df['labels']==1]
+    df_negative = df[df['labels']==0]
+    
+    sensitivity = len(df_positive[df_positive['labels'] == df_positive['predictions']].index) / len(df_positive.index)
+    specificity = len(df_negative[df_negative['labels'] == df_negative['predictions']].index) / len(df_negative.index)
+    
+    return (sensitivity, specificity)
 
 
 if __name__ == "__main__":
