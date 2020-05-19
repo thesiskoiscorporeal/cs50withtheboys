@@ -1,6 +1,4 @@
 import nltk
-nltk.download('punkt')
-
 import sys
 import re
 
@@ -18,7 +16,12 @@ V -> "smiled" | "tell" | "were"
 """
 
 NONTERMINALS = """
-S -> N V
+S -> NP VP | NP VP Conj NP VP | NP VP PP NP VP | NP VP Conj VP 
+NP -> N | Det N | AdjP N | NP PP | AdjP AdjP NP | AdjP AdjP AdjP N
+VP -> V | AdvP VP | VP AdvP | VP PP NP | VP NP 
+AdvP -> Adv | Det NP PP NP
+AdjP -> Adj | Det Adj
+PP -> P | P Det N P
 """
 
 grammar = nltk.CFG.fromstring(NONTERMINALS + TERMINALS)
