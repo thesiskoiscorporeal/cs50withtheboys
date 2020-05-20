@@ -110,7 +110,7 @@ def top_files(query, files, idfs, n):
     to their IDF values), return a list of the filenames of the the `n` top
     files that match the query, ranked according to tf-idf.
     """
-    file_values = {x: 0 for x in files.keys()} # dict containing filenames as keys and tf-idfs as values, initialise values to 0
+    file_values = {x: 0 for x in files.keys()} # dict containing filenames as keys and sum of query tf-idfs as values, initialise values to 0
     
     for word in query: # iterate over words in query
         for file,contents in files: # iterate over files and their contents in dict
@@ -118,9 +118,8 @@ def top_files(query, files, idfs, n):
                 tf_idf = contents.count(word) * idfs[word] # calculate tf-idf of word in contents of file
                 file_values[file] += tf_idf # add calculated tf-idf for current word to value in file_values dict
     
-    result = sorted(file_values, key=file_values.get, reverse=True) # returns list of dict keys sordted by value, descending order
-    result = result[:n] # slice of first n items only
-    
+    result = sorted(file_values, key=file_values.get, reverse=True)[:n] # returns list of n dict keys with highest values, descending order
+      
     return result
 
 
@@ -132,7 +131,30 @@ def top_sentences(query, sentences, idfs, n):
     the query, ranked according to idf. If there are ties, preference should
     be given to sentences that have a higher query term density.
     """
-    raise NotImplementedError
+    
+    sentence_idfs = {x: 0 for x in sentences.keys()} # dict containing sentences as keys and sum of query idfs as values, initialise values to 0
+    
+    for word in query: # iterate over words in query
+        for sentence,contents in sentences: # iterate over sentences and their list of words
+            if word in contents:
+                sentence_idfs[sentence] += idfs[word] # add idf of word in query to value of sentence in sentence_idfs dict
+                
+    if sentence_idfs.values.count(max(sentence_idfs.values)) == 1: # if only 1 key with maximum value
+        return max(sentence_idfs, key=sentence_idfs.get) # return key with maximum idf value
+    
+    else: #calculate query term densities
+        n_maximum = sentence_idfs.values.count(max(sentence_idfs.values)) # number of keys with the highest value
+        max_keys = sorted(sentence_idfs, key=sentence_idfs.get, reverse=True)[:n_maximum] # returns all keys with the highest idf value            
+        sentence_densities = {x: 0 for x in max_keys} # dict containing query term densities for keys with highest idf value
+        for key in max_keys: # iterate over keys with max idf values
+            sentence_length = len(sentences[key])
+            words_in_query = 0 # number of words in sentence that are also in querty
+            for word in sentences[key]: # iterate over contents of item (list)
+                if word in query:
+                    words_in_query += 1
+            sentence_densities[key] = words_in_query/sentence_length # update value of sentence key in dict to its query term density
+       
+    return max(sentence_densities, key=sentence_densities.get) # return key with maximum density value
 
 
 if __name__ == "__main__":
