@@ -119,8 +119,9 @@ def top_files(query, files, idfs, n):
                 file_values[file] += tf_idf # add calculated tf-idf for current word to value in file_values dict
     
     result = sorted(file_values, key=file_values.get, reverse=True) # returns list of dict keys sordted by value, descending order
+    result = result[:n] # slice of first n items only
     
-    raise result
+    return result
 
 
 def top_sentences(query, sentences, idfs, n):
