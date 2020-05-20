@@ -5,7 +5,7 @@ import string
 import numpy as np
 
 FILE_MATCHES = 1
-SENTENCE_MATCHES = 1
+SENTENCE_MATCHES = 3
 
 
 def main():
@@ -43,7 +43,7 @@ def main():
     # Determine top sentence matches
     matches = top_sentences(query, sentences, idfs, n=SENTENCE_MATCHES)
     for match in matches:
-        print(match)
+        print(match + "\n")
 
 
 def load_files(directory):
@@ -54,7 +54,7 @@ def load_files(directory):
     results = {}
     
     for filename in os.listdir(directory): # iterate through filenames in directory
-        f = open(os.path.join(directory, filename), "r") # open file
+        f = open(os.path.join(directory, filename), "r", encoding="utf8") # open file
         results[filename] = f.read() # read contents and save to dict under key filename
         
     return results
@@ -113,7 +113,7 @@ def top_files(query, files, idfs, n):
     file_values = {x: 0 for x in files.keys()} # dict containing filenames as keys and sum of query tf-idfs as values, initialise values to 0
     
     for word in query: # iterate over words in query
-        for file,contents in files: # iterate over files and their contents in dict
+        for file,contents in files.items(): # iterate over files and their contents in dict
             if word in contents:
                 tf_idf = contents.count(word) * idfs[word] # calculate tf-idf of word in contents of file
                 file_values[file] += tf_idf # add calculated tf-idf for current word to value in file_values dict
@@ -133,28 +133,35 @@ def top_sentences(query, sentences, idfs, n):
     """
     
     sentence_idfs = {x: 0 for x in sentences.keys()} # dict containing sentences as keys and sum of query idfs as values, initialise values to 0
+    sentence_densities = {x: 0 for x in sentences.keys()} # dict containing query term densities 
     
     for word in query: # iterate over words in query
-        for sentence,contents in sentences: # iterate over sentences and their list of words
+        for sentence,contents in sentences.items(): # iterate over sentences and their list of words
             if word in contents:
                 sentence_idfs[sentence] += idfs[word] # add idf of word in query to value of sentence in sentence_idfs dict
-                
-    if sentence_idfs.values.count(max(sentence_idfs.values)) == 1: # if only 1 key with maximum value
-        return max(sentence_idfs, key=sentence_idfs.get) # return key with maximum idf value
     
-    else: #calculate query term densities
-        n_maximum = sentence_idfs.values.count(max(sentence_idfs.values)) # number of keys with the highest value
-        max_keys = sorted(sentence_idfs, key=sentence_idfs.get, reverse=True)[:n_maximum] # returns all keys with the highest idf value            
-        sentence_densities = {x: 0 for x in max_keys} # dict containing query term densities for keys with highest idf value
-        for key in max_keys: # iterate over keys with max idf values
-            sentence_length = len(sentences[key])
-            words_in_query = 0 # number of words in sentence that are also in querty
-            for word in sentences[key]: # iterate over contents of item (list)
-                if word in query:
-                    words_in_query += 1
-            sentence_densities[key] = words_in_query/sentence_length # update value of sentence key in dict to its query term density
-       
-    return max(sentence_densities, key=sentence_densities.get) # return key with maximum density value
+    for key in sentences.keys(): # iterate over keys with max idf values
+        sentence_length = len(sentences[key])
+        words_in_query = 0 # number of words in sentence that are also in querty
+        for word in sentences[key]: # iterate over contents of item (list)
+            if word in query:
+                words_in_query += 1
+        sentence_densities[key] = words_in_query/sentence_length # update value of sentence key in dict to its query term density            
+    
+    result = [*sentences.keys()]
+    result = sorted(result, key=lambda e: (sentence_idfs[e], sentence_densities[e]), reverse=True) # sort keys first by idf then by keyword term densities
+    
+    ''' #metrics
+    counter = 1                                                                                               # reverse=True for descending order    
+    for thing in result[:n]:
+        print("Item " + str(counter))
+        print("IDF: " + str(sentence_idfs[thing]))
+        print("density: " + str(sentence_densities[thing]))
+        print("Composite: " + str(sentence_idfs[thing] * sentence_densities[thing]) + "\n")
+        counter += 1
+    '''
+        
+    return result[:n]
 
 
 if __name__ == "__main__":
