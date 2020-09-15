@@ -1,0 +1,6 @@
+{
+    "python.pythonPath": "A:\\ProgramData\\Anaconda3\\python.exe",
+    "git.ignoreLimitWarning": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
+}
